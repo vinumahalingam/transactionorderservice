@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: sit
+  application:
+    name: transactionorderservice
+
+  config:
+    import: optional:configserver:http://localhost:9090
+    username: root
+    password: secret
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
