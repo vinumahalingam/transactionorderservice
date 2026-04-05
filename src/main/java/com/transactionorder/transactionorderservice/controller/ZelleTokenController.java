@@ -68,4 +68,6 @@ public class ZelleTokenController {
         TokenDetailsTO tokenDetailsTO = zelleTokenService.updateTokenDetails(id, zelleTokenDetailsRequest);
         return ResponseEntity.ok(tokenDetailsTO);
     }
+
+
 }

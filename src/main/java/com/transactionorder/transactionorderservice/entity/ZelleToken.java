@@ -14,4 +14,5 @@ public class ZelleToken {
     @Field("tokenType")
     private String tokenType;
     private String tokenValue;
+    private Long customerProfileId;
 }
