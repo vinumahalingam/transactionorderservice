@@ -7,6 +7,8 @@ import com.transactionorder.transactionorderservice.model.TokenDetailsTO;
 import com.transactionorder.transactionorderservice.model.ZelleTokenDetailsRequest;
 import com.transactionorder.transactionorderservice.service.ZelleTokenCustomerDetailsService;
 import com.transactionorder.transactionorderservice.service.ZelleTokenService;
+import com.transactionorder.transactionorderservice.exception.InvalidRequestException;
+import com.transactionorder.transactionorderservice.exception.CustomerProfileNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -25,20 +27,23 @@ public class TokenAndCustomerController {
     ZelleTokenCustomerDetailsService zelleTokenCustomerDetailsService;
 
     @GetMapping("/byid")
-    public ResponseEntity<TokenAndCustomerDetailsTO> getTokenById(@RequestParam("id") String id) throws TokenDetailsNotFound {
+    public ResponseEntity<TokenAndCustomerDetailsTO> getTokenById(@RequestParam("id") String id)
+            throws TokenDetailsNotFound {
         log.info("Inside ZelleTokenController - getTokenById for ID: " + id);
         TokenAndCustomerDetailsTO tokenAndCustomerDetailsTO = zelleTokenCustomerDetailsService.findByID(id);
         return ResponseEntity.ok(tokenAndCustomerDetailsTO);
     }
 
     @GetMapping("/combinedIds")
-    public ResponseEntity<Mono<CombinedCustomerProfileTO>> getCombinedCustomerProfiles(@RequestParam("profileId1") @NotNull(message = "Profile Id cannot be 0 or negative") Long profileId1,
-                                                                                       @RequestParam("profileId2") @NotNull(message = "Profile Id cannot be 0 or negative") Long profileId2) throws InvalidRequestException, CustomerProfileNotFoundException {
+    public ResponseEntity<Mono<CombinedCustomerProfileTO>> getCombinedCustomerProfiles(
+            @RequestParam("profileId1") @NotNull(message = "Profile Id cannot be 0 or negative") Long profileId1,
+            @RequestParam("profileId2") @NotNull(message = "Profile Id cannot be 0 or negative") Long profileId2)
+            throws InvalidRequestException, CustomerProfileNotFoundException {
 
         log.info("Inside TokenAndCustomerProfileDetailsController.getCombinedCustomerProfiles");
-        Mono<CombinedCustomerProfileTO> combinedCustomerProfile = tokenAndCustomerServiceImpl.getCombinedCustomerProfile(profileId1, profileId2);
+        Mono<CombinedCustomerProfileTO> combinedCustomerProfile = zelleTokenCustomerDetailsService
+                .getCombinedCustomerProfile(profileId1, profileId2);
         return ResponseEntity.ok(combinedCustomerProfile);
     }
-
 
 }

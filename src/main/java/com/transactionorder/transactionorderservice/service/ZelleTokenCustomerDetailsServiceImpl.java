@@ -7,6 +7,10 @@ import com.transactionorder.transactionorderservice.model.CustomerProfileDTO;
 import com.transactionorder.transactionorderservice.model.TokenAndCustomerDetailsTO;
 import com.transactionorder.transactionorderservice.model.TokenDetailsTO;
 import com.transactionorder.transactionorderservice.repository.ZelleTokenRepository;
+import com.transactionorder.transactionorderservice.exception.CustomerProfileNotFoundException;
+import com.transactionorder.transactionorderservice.exception.InvalidRequestException;
+import com.transactionorder.transactionorderservice.model.CombinedCustomerProfileTO;
+import reactor.core.publisher.Mono;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,8 +54,11 @@ public class ZelleTokenCustomerDetailsServiceImpl implements ZelleTokenCustomerD
         return tokenAndCustomerDetailsTO;
         
     }
-
-
-
-
+    public Mono<CombinedCustomerProfileTO> getCombinedCustomerProfile(Long profileId1, Long profileId2) throws InvalidRequestException, CustomerProfileNotFoundException {
+        if (profileId1 == null || profileId1 <= 0 || profileId2 == null || profileId2 <= 0) {
+            throw new InvalidRequestException("Profile Id cannot be 0 or negative");
+        }
+        return customerProfileHelper.getCombinedUsers(profileId1, profileId2)
+                .switchIfEmpty(Mono.error(new CustomerProfileNotFoundException("One or both profiles not found")));
+    }
 }
