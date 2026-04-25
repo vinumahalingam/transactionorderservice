@@ -13,7 +13,8 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient(){
         return WebClient.builder()
-                .baseUrl(customerProfileUrl)
+                .baseUrl(customerProfileUrl).defaultHeaders(headers -> headers.setBasicAuth("root", "root"))
                 .build();
+
     }
 }
